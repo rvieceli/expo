@@ -13,6 +13,7 @@ import expo.modules.updates.manifest.ManifestFactory
 import expo.modules.updates.manifest.UpdateManifest
 import expo.modules.updates.selectionpolicy.SelectionPolicies
 import okhttp3.*
+import org.apache.commons.codec.binary.Hex
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -191,18 +192,21 @@ open class FileDownloader(context: Context) {
        *   signature: string;
        * }
        */
-      val manifestString =
-        if (isSignatureInBody) updateResponseJson.getString("manifestString") else manifestBody
+      val manifestString = if (isSignatureInBody) {
+        updateResponseJson.getString("manifestString")
+      } else {
+        manifestBody
+      }
       val preManifest = JSONObject(manifestString)
 
       // XDL serves unsigned manifests with the `signature` key set to "UNSIGNED".
       // We should treat these manifests as unsigned rather than signed with an invalid signature.
       val isUnsignedFromXDL = "UNSIGNED" == signature
       if (signature != null && !isUnsignedFromXDL) {
-        Crypto.verifyPublicRSASignature(
+        Crypto.verifyExpoPublicRSASignature(
+          this@FileDownloader,
           manifestString,
           signature,
-          this@FileDownloader,
           object : RSASignatureListener {
             override fun onError(exception: Exception, isNetworkError: Boolean) {
               callback.onFailure("Could not validate signed manifest", exception)
@@ -211,7 +215,7 @@ open class FileDownloader(context: Context) {
             override fun onCompleted(isValid: Boolean) {
               if (isValid) {
                 try {
-                  createManifest(preManifest, manifestHeaders, extensions, true, configuration, callback)
+                  createManifest(manifestBody, preManifest, manifestHeaders, extensions, true, configuration, callback)
                 } catch (e: Exception) {
                   callback.onFailure("Failed to parse manifest data", e)
                 }
@@ -225,7 +229,7 @@ open class FileDownloader(context: Context) {
           }
         )
       } else {
-        createManifest(preManifest, manifestHeaders, extensions, false, configuration, callback)
+        createManifest(manifestBody, preManifest, manifestHeaders, extensions, false, configuration, callback)
       }
     } catch (e: Exception) {
       callback.onFailure(
@@ -302,6 +306,12 @@ open class FileDownloader(context: Context) {
             }
 
             override fun onSuccess(file: File, hash: ByteArray) {
+              val hashHexString = String(Hex.encodeHex(hash))
+              if (!asset.expectedHash.equals(hashHexString)) {
+                callback.onFailure(Exception("Asset hash invalid: ${asset.key}; expectedHash: ${asset.expectedHash}; actualHash: $hashHexString"), asset)
+                return
+              }
+
               asset.downloadTime = Date()
               asset.relativePath = filename
               asset.hash = hash
@@ -344,6 +354,7 @@ open class FileDownloader(context: Context) {
 
     @Throws(Exception::class)
     private fun createManifest(
+      bodyString: String,
       preManifest: JSONObject,
       headers: Headers,
       extensions: JSONObject?,
@@ -351,6 +362,22 @@ open class FileDownloader(context: Context) {
       configuration: UpdatesConfiguration,
       callback: ManifestDownloadCallback
     ) {
+      try {
+        configuration.codeSigningConfiguration?.let {
+          val isSignatureValid = Crypto.verifyCodeSigning(
+            it,
+            Crypto.parseSignatureHeader(headers["expo-signature"]),
+            bodyString.toByteArray()
+          )
+          if (!isSignatureValid) {
+            throw IOException("File download was successful, but signature was incorrect")
+          }
+        }
+      } catch (e: Exception) {
+        callback.onFailure("Downloaded manifest signature is invalid", e)
+        return
+      }
+
       if (configuration.expectsSignedManifest) {
         preManifest.put("isVerified", isVerified)
       }
@@ -466,6 +493,11 @@ open class FileDownloader(context: Context) {
         .apply {
           for ((key, value) in configuration.requestHeaders) {
             header(key, value)
+          }
+        }
+        .apply {
+          configuration.codeSigningConfiguration?.let {
+            header("expo-accept-signature", Crypto.createAcceptSignatureHeader(it))
           }
         }
         .build()

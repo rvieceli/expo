@@ -83,6 +83,7 @@ class FileDownloaderTest {
     // serverDefinedHeaders should not be able to override preset headers
     val extraHeaders = JSONObject()
     extraHeaders.put("expo-platform", "ios")
+
     val actual = FileDownloader.createRequestForManifest(config, extraHeaders, context)
     Assert.assertEquals("android", actual.header("expo-platform"))
     Assert.assertEquals("custom", actual.header("expo-updates-environment"))
