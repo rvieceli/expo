@@ -8,6 +8,8 @@
 
 ### 🐛 Bug fixes
 
+- Fix plugin when `MainActivity.onNewIntent` exists. ([#15459](https://github.com/expo/expo/pull/15459) by [@janicduplessis](https://github.com/janicduplessis))
+
 ### 💡 Others
 
 ## 0.9.0 — 2021-12-03
@@ -20,7 +22,6 @@
 
 - Fix `No native splash screen registered for given view controller` error happening when project is using both `expo-dev-client` and `expo-splash-screen` packages. ([#14745](https://github.com/expo/expo/pull/14745) by [@kudo](https://github.com/kudo))
 - Fix cannot load url that starts with exp. (by [@lukmccall](https://github.com/lukmccall))
-- [plugin] Fix config plugin compatibility with expo-screen-orientation. ([#14752](https://github.com/expo/expo/pull/14752) by [@esamelson](https://github.com/esamelson))
 
 ## 0.8.4 — 2021-10-21
 

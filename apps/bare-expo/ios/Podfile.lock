@@ -193,6 +193,7 @@ PODS:
     - React-RCTVibration
     - ReactCommon/turbomodule/core
     - Yoga
+  - expo-dev-menu/SafeAreaView (0.8.6)
   - expo-dev-menu/Tests (0.8.6):
     - Nimble
     - Quick
@@ -203,6 +204,7 @@ PODS:
   - expo-dev-menu/Vendored (0.8.6):
     - expo-dev-menu/GestureHandler
     - expo-dev-menu/Reanimated
+    - expo-dev-menu/SafeAreaView
   - ExpoCellular (4.1.0):
     - ExpoModulesCore
   - ExpoHaptics (11.1.0):
@@ -709,7 +711,7 @@ PODS:
     - React-Core
   - RNGestureHandler (2.0.0):
     - React-Core
-  - RNReanimated (2.2.3):
+  - RNReanimated (2.2.4):
     - DoubleConversion
     - FBLazyVector
     - FBReactNativeSpec
@@ -738,7 +740,7 @@ PODS:
     - React-RCTVibration
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNScreens (3.8.0):
+  - RNScreens (3.10.1):
     - React-Core
     - React-RCTImage
   - RNSharedElement (0.8.3):
@@ -890,7 +892,7 @@ DEPENDENCIES:
   - "RNCPicker (from `../../../node_modules/@react-native-picker/picker`)"
   - "RNDateTimePicker (from `../../../node_modules/@react-native-community/datetimepicker`)"
   - RNGestureHandler (from `../../../node_modules/react-native-gesture-handler`)
-  - RNReanimated (from `../../../node_modules/react-native-reanimated`)
+  - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../../../node_modules/react-native-screens`)
   - RNSharedElement (from `../../../node_modules/react-native-shared-element`)
   - RNSVG (from `../../../node_modules/react-native-svg`)
@@ -1233,7 +1235,7 @@ EXTERNAL SOURCES:
   RNGestureHandler:
     :path: "../../../node_modules/react-native-gesture-handler"
   RNReanimated:
-    :path: "../../../node_modules/react-native-reanimated"
+    :path: "../node_modules/react-native-reanimated"
   RNScreens:
     :path: "../../../node_modules/react-native-screens"
   RNSharedElement:
@@ -1301,7 +1303,7 @@ SPEC CHECKSUMS:
   Expo: 34e7082eedd0b86815cf186b72dd5cbd235037f3
   expo-dev-client: 8d496fb4f930c79f64574c1109a292d16933fb26
   expo-dev-launcher: ce48e68aedfbf3c1df30e7e75fa0e100d5b4a892
-  expo-dev-menu: eead0093127f4a0180048195adfd5c8e8855ed89
+  expo-dev-menu: 3c37b25b7cb2bf8a179430583917ac2cfa7ecc49
   expo-dev-menu-interface: 6ecfd64dc3eab1e7e772170f5e058468fdccaac9
   ExpoCellular: f800f765c3dd91205a2b84cd4e3ea132c397cffe
   ExpoHaptics: c62a5fc7bba0184d0165d559fc2b0fc46168ef40
@@ -1395,8 +1397,8 @@ SPEC CHECKSUMS:
   RNCPicker: cb57c823d5ce8d2d0b5dfb45ad97b737260dc59e
   RNDateTimePicker: 2224ee77a86b7123377597a015502435e2e49957
   RNGestureHandler: 51c9f32f43720c3a1c7660690a843f33acbcf01f
-  RNReanimated: 64c38d47ffcc29c97fc1d8cfde9e8a73d7be7cc8
-  RNScreens: 6e1ea5787989f92b0671049b808aef64fa1ef98c
+  RNReanimated: 024eff8202342abf4b24e11575a16afc441dabfe
+  RNScreens: 522705f2e5c9d27efb17f24aceb2bf8335bc7b8e
   RNSharedElement: 381b5e33366513cc3f449f2dc3a42c5df0f54021
   RNSVG: 551acb6562324b1d52a4e0758f7ca0ec234e278f
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
